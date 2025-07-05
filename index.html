@@ -3,236 +3,255 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <base href="/hbdnave/">
-  <title>Nave's Birthday Surprise 🎂</title>
-  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Karla:wght@400;700&display=swap" rel="stylesheet">
+  <title>Birthday Quiz 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Karla&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #d946ef;
-      --secondary: #a855f7;
-      --bg-gradient: linear-gradient(135deg, #fff0f6, #fbe8ff);
-    }
-    * {
-      box-sizing: border-box;
+      --cream: #FFF8E7;
+      --brown-dark: #8B4513;
+      --brown-medium: #A0522D;
+      --font-title: 'DM Serif Display', serif;
+      --font-body: 'Karla', sans-serif;
     }
     body {
       margin: 0;
-      font-family: 'Karla', sans-serif;
-      background: var(--bg-gradient);
-      overflow-x: hidden;
-      color: #4c1d95;
-    }
-    h1, h2 {
-      font-family: 'Alfa Slab One', serif;
-      color: var(--primary);
-      margin: 0 0 10px;
-    }
-    p {
-      line-height: 1.5;
-    }
-    .screen {
-      display: none;
-      max-width: 600px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      text-align: center;
-      animation: fadeIn 1s ease-out;
-    }
-    .active {
-      display: block;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px 5px;
-      border: none;
-      border-radius: 8px;
-      background: var(--primary);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: var(--secondary);
-    }
-    input {
-      padding: 10px;
-      border: 2px solid var(--secondary);
-      border-radius: 8px;
-      width: 80%;
-      margin: 15px 0;
-      font-size: 1rem;
-    }
-    .letter {
-      text-align: left;
-      background: #fff7fb;
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-      animation: fadeIn 2s ease-out;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.8rem;
-      color: var(--primary);
-    }
-    .confetti-piece {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background-color: hsl(var(--hue), 100%, 70%);
-      top: -10px;
-      animation: fall 4s forwards;
-    }
-    @keyframes fall {
-      to {
-        transform: translateY(100vh) rotate(720deg);
-        opacity: 0;
-      }
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-    /* LOADING SCREEN */
-    #loading {
+      background-color: var(--cream);
+      font-family: var(--font-body);
+      color: var(--brown-dark);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: var(--bg-gradient);
-      font-family: 'Alfa Slab One', serif;
-      font-size: 2rem;
-      color: var(--primary);
-      animation: pulse 1.5s infinite;
+      overflow: hidden;
     }
-    @keyframes pulse {
-      0% {opacity: 0.5;}
-      50% {opacity: 1;}
-      100% {opacity: 0.5;}
+    h1, h2, h3 {
+      font-family: var(--font-title);
     }
-    .envelope {
-      position: relative;
-      margin-top: 20px;
-      padding: 20px;
-      background: #fff;
-      border: 2px dashed var(--secondary);
-      border-radius: 15px;
+    button {
+      background-color: var(--brown-medium);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin-top: 12px;
       cursor: pointer;
-      transition: transform 0.5s;
+      font-family: var(--font-body);
+      font-size: 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
     }
-    .envelope.open {
-      transform: scale(1.02) rotate(-1deg);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    button:hover {
+      background-color: var(--brown-dark);
+    }
+    .hidden {
+      display: none;
+    }
+    #container {
+      max-width: 500px;
+      text-align: center;
+      padding: 24px;
+      background-color: #ffffffcc;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    #loading {
+      font-size: 24px;
+    }
+    #result {
+      font-size: 20px;
+    }
+    #feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    #confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    #penguin, #letter {
+      max-width: 300px;
+      margin: 16px auto;
+      display: block;
     }
   </style>
 </head>
+
 <body>
-  <div id="loading">
-    Loading Birthday Surprise...
-  </div>
-
-  <div class="screen" id="welcome">
-    <h1>Hi Nave! 🎂</h1>
-    <p>Siap untuk tantangan ultah sempoa? 🎉</p>
-    <button onclick="startQuiz()">Mulai Quiz</button>
-  </div>
-
-  <div class="screen" id="quiz">
-    <h2 id="question"></h2>
-    <input type="text" id="answerInput" placeholder="Jawabanmu di sini" />
-    <br>
-    <button onclick="nextQuestion()">Next</button>
-  </div>
-
-  <div class="screen" id="result">
-    <h1>🎉 Selamat! 🎉</h1>
-    <p>Kamu udah selesaikan tantangan sempoa birthday. Ini hadiahnya ❤️</p>
-    <div class="envelope" onclick="openEnvelope(this)">
-      <div class="letter" style="display: none;">
-        <h2>Special Message 🎁</h2>
-        <p>
-          Dear Nave,<br><br>
-          Happy Birthday! 🎂✨ Hari ini bukan sekadar tentang bertambah usia, tapi tentang merayakan semua hal yang bikin kamu jadi orang yang luar biasa. Kamu itu kayak CD player jadul tapi keren—ngasih vibe klasik yang bikin orang nyaman, tapi tetap bisa nge-beat dengan hal-hal baru.<br><br>
-          Aku harap hari ini jadi momen yang memorable. Isi harimu dengan tawa, musik yang keras (tapi bukan hati yang keras ya wkwk), dan orang-orang yang sayang sama kamu.<br><br>
-          Terima kasih udah jadi teman yang asik, yang bisa diajak cerita random sampai hal paling dalem.<br><br>
-          Semoga semua hal yang kamu mau bisa keturutan satu-satu. Jangan lupa rehat kalau capek, karena dunia butuh versi terbaik dari kamu.<br><br>
-          Stay messy, stay authentic, stay you. Cheers to more years of fun and weirdness.<br><br>
-          With much love,<br>
-          Fredric
-        </p>
+  <canvas id="confetti"></canvas>
+  <div id="container">
+    <div id="loading">Loading Birthday Quiz...</div>
+    <div id="welcome" class="hidden">
+      <h1>Siap untuk Quiz? 🎓✨</h1>
+      <p>Jawab semua soal semampumu. Kamu bisa skip kalau mau!</p>
+      <button id="startBtn">Mulai Quiz</button>
+    </div>
+    <div id="quiz" class="hidden">
+      <h2 id="progress">Soal 1/100</h2>
+      <div id="question"></div>
+      <input type="number" id="answerInput" placeholder="Jawabanmu">
+      <div id="feedback"></div>
+      <button id="nextBtn">Next ➜</button>
+      <button id="skipBtn">Skip</button>
+    </div>
+    <div id="result" class="hidden">
+      <h2>Quiz Selesai! 🎉</h2>
+      <p id="score"></p>
+      <img id="penguin" class="hidden" src="https://i.ibb.co/QXnGq6v/penguin-gift.gif" alt="Penguin giving gift">
+      <div id="letter" class="hidden">
+        <h3>Surat untukmu ❤️</h3>
+        <p>Selamat sudah menyelesaikan quiz ini. Ini hadiah kecil untukmu. Semoga selalu bahagia dan semangat belajar ya!</p>
       </div>
+      <button id="restartBtn">Restart Quiz</button>
     </div>
   </div>
 
-  <footer>Made with ❤️ for Nave</footer>
-
+  <audio id="startSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <audio id="correctSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+  <audio id="wrongSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
   <script>
     const loading = document.getElementById('loading');
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        loading.style.display = 'none';
-        document.getElementById('welcome').classList.add('active');
-      }, 2000);
-    });
+    const welcome = document.getElementById('welcome');
+    const quiz = document.getElementById('quiz');
+    const result = document.getElementById('result');
+    const questionEl = document.getElementById('question');
+    const progressEl = document.getElementById('progress');
+    const answerInput = document.getElementById('answerInput');
+    const feedbackEl = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const penguinImg = document.getElementById('penguin');
+    const letter = document.getElementById('letter');
+    const confettiCanvas = document.getElementById('confetti');
+    const ctx = confettiCanvas.getContext('2d');
+    const startSound = document.getElementById('startSound');
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
 
-    const questions = [
-      { q: "23 + 47 = ?" },
-      { q: "56 - 19 = ?" },
-      { q: "7 × 8 = ?" },
-      { q: "120 ÷ 6 = ?" },
-      { q: "34 + 29 = ?" }
-    ];
-
+    let questions = [];
     let current = 0;
+    let correctCount = 0;
 
-    function startQuiz() {
-      document.getElementById('welcome').classList.remove('active');
-      document.getElementById('quiz').classList.add('active');
-      showQuestion();
+    // Confetti setup
+    let confettiPieces = [];
+    function spawnConfetti() {
+      confettiPieces = Array.from({length: 150}, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 6 + 2,
+        color: `hsl(${Math.random()*360}, 70%, 80%)`,
+        speed: Math.random() * 3 + 2
+      }));
+      requestAnimationFrame(drawConfetti);
+    }
+    function drawConfetti() {
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += p.speed;
+        if (p.y > window.innerHeight) p.y = -10;
+      });
+      requestAnimationFrame(drawConfetti);
     }
 
+    function resizeCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function generateQuestions() {
+      let qs = [];
+      for (let i=0; i<100; i++) {
+        let a = Math.floor(Math.random() * 900 + 100);
+        let b = Math.floor(Math.random() * 90 + 10);
+        let ops = ['+', '-', '*', '/'];
+        let op = ops[Math.floor(Math.random()*ops.length)];
+        let q, ans;
+        if (op==='+') { q=`${a} + ${b}`; ans=a+b; }
+        else if (op==='-') { q=`${a} - ${b}`; ans=a-b; }
+        else if (op==='*') { q=`${a} × ${b}`; ans=a*b; }
+        else { 
+          ans = Math.floor(a/b);
+          q=`${ans*b} ÷ ${b}`; 
+        }
+        qs.push({q, ans});
+      }
+      return qs;
+    }
+
+    window.onload = () => {
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        welcome.classList.remove('hidden');
+      }, 1500);
+    };
+
+    document.getElementById('startBtn').onclick = () => {
+      startSound.play();
+      questions = generateQuestions();
+      current = 0;
+      correctCount = 0;
+      welcome.classList.add('hidden');
+      quiz.classList.remove('hidden');
+      showQuestion();
+    };
+
     function showQuestion() {
-      document.getElementById('question').textContent = questions[current].q;
-      document.getElementById('answerInput').value = '';
+      progressEl.textContent = `Soal ${current+1}/100`;
+      questionEl.textContent = questions[current].q;
+      answerInput.value = '';
+      feedbackEl.textContent = '';
+      answerInput.focus();
     }
 
     function nextQuestion() {
       current++;
-      if (current < questions.length) {
-        showQuestion();
+      if (current >= 100) endQuiz();
+      else showQuestion();
+    }
+
+    document.getElementById('nextBtn').onclick = () => checkAnswer();
+    document.getElementById('skipBtn').onclick = () => nextQuestion();
+
+    answerInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    function checkAnswer() {
+      let userAns = parseInt(answerInput.value);
+      if (userAns === questions[current].ans) {
+        feedbackEl.textContent = 'Benar! 🎉';
+        correctCount++;
+        correctSound.play();
       } else {
-        showResult();
+        feedbackEl.textContent = `Salah! Jawaban: ${questions[current].ans}`;
+        wrongSound.play();
       }
+      setTimeout(nextQuestion, 1000);
     }
 
-    function showResult() {
-      document.getElementById('quiz').classList.remove('active');
-      document.getElementById('result').classList.add('active');
-      launchConfetti();
+    function endQuiz() {
+      quiz.classList.add('hidden');
+      result.classList.remove('hidden');
+      scoreEl.textContent = `Kamu benar ${correctCount}/100 soal!`;
+      spawnConfetti();
+      setTimeout(() => {
+        penguinImg.classList.remove('hidden');
+        setTimeout(() => {
+          letter.classList.remove('hidden');
+        }, 2000);
+      }, 2000);
     }
 
-    function openEnvelope(el) {
-      el.classList.add('open');
-      el.querySelector('.letter').style.display = 'block';
-    }
-
-    function launchConfetti() {
-      for (let i = 0; i < 120; i++) {
-        let div = document.createElement('div');
-        div.classList.add('confetti-piece');
-        div.style.left = Math.random() * 100 + 'vw';
-        div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        div.style.setProperty('--hue', Math.random() * 360);
-        document.body.appendChild(div);
-        setTimeout(() => div.remove(), 4000);
-      }
-    }
+    document.getElementById('restartBtn').onclick = () => {
+      location.reload();
+    };
   </script>
 </body>
 </html>
