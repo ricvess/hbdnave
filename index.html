@@ -22,7 +22,6 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
     }
     h1, h2, h3 {
       font-family: var(--font-title);
@@ -32,7 +31,7 @@
       color: white;
       border: none;
       padding: 12px 24px;
-      margin-top: 12px;
+      margin-top: 16px;
       cursor: pointer;
       font-family: var(--font-body);
       font-size: 16px;
@@ -47,6 +46,7 @@
     }
     #container {
       max-width: 500px;
+      width: 90%;
       text-align: center;
       padding: 24px;
       background-color: #ffffffcc;
@@ -56,12 +56,21 @@
     #loading {
       font-size: 24px;
     }
-    #result {
-      font-size: 20px;
+    #question {
+      font-size: 28px;
+      margin: 20px 0;
     }
-    #feedback {
-      margin-top: 10px;
-      font-weight: bold;
+    input {
+      width: 80%;
+      padding: 12px;
+      font-size: 18px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 2px solid var(--brown-medium);
+    }
+    #feedbackScreen h2 {
+      font-size: 36px;
+      margin: 20px 0;
     }
     #confetti {
       position: fixed;
@@ -70,39 +79,40 @@
       width: 100vw;
       height: 100vh;
       pointer-events: none;
-    }
-    #penguin, #letter {
-      max-width: 300px;
-      margin: 16px auto;
-      display: block;
+      z-index: 999;
     }
   </style>
 </head>
-
 <body>
   <canvas id="confetti"></canvas>
   <div id="container">
-    <div id="loading">Loading Birthday Quiz...</div>
+    <div id="loading">Loading Quiz...</div>
+
     <div id="welcome" class="hidden">
-      <h1>Siap untuk Quiz? 🎓✨</h1>
+      <h1>Ready For Quiz?</h1>
       <p>Jawab semua soal semampumu. Kamu bisa skip kalau mau!</p>
-      <button id="startBtn">Mulai Quiz</button>
+      <button id="startBtn">Start Quiz</button>
     </div>
+
     <div id="quiz" class="hidden">
-      <h2 id="progress">Soal 1/100</h2>
+      <h2 id="progress">Question 1/10</h2>
       <div id="question"></div>
-      <input type="number" id="answerInput" placeholder="Jawabanmu">
-      <div id="feedback"></div>
-      <button id="nextBtn">Next ➜</button>
-      <button id="skipBtn">Skip</button>
+      <input type="number" id="answerInput" placeholder="Your Answer">
+      <button id="submitBtn">Submit</button>
     </div>
+
+    <div id="feedbackScreen" class="hidden">
+      <h2 id="feedbackText"></h2>
+      <button id="nextBtn">Next Question</button>
+    </div>
+
     <div id="result" class="hidden">
-      <h2>Quiz Selesai! 🎉</h2>
+      <h2>Selamat Ulang Tahun! 🎂✨</h2>
       <p id="score"></p>
-      <img id="penguin" class="hidden" src="https://i.ibb.co/QXnGq6v/penguin-gift.gif" alt="Penguin giving gift">
-      <div id="letter" class="hidden">
-        <h3>Surat untukmu ❤️</h3>
-        <p>Selamat sudah menyelesaikan quiz ini. Ini hadiah kecil untukmu. Semoga selalu bahagia dan semangat belajar ya!</p>
+      <div id="letter">
+        <h3>🎁 Hadiah untukmu ❤️</h3>
+        <p>Karena sudah berhasil jawab quiz ini, ada hadiah ucapan spesial!  
+        Semoga makin pintar, makin cakep, dan selalu bahagia ya! 🎉🥰</p>
       </div>
       <button id="restartBtn">Restart Quiz</button>
     </div>
@@ -111,20 +121,20 @@
   <audio id="startSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
   <audio id="correctSound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
   <audio id="wrongSound" src="https://www.soundjay.com/button/beep-10.wav"></audio>
+
   <script>
     const loading = document.getElementById('loading');
     const welcome = document.getElementById('welcome');
     const quiz = document.getElementById('quiz');
+    const feedbackScreen = document.getElementById('feedbackScreen');
     const result = document.getElementById('result');
     const questionEl = document.getElementById('question');
     const progressEl = document.getElementById('progress');
     const answerInput = document.getElementById('answerInput');
-    const feedbackEl = document.getElementById('feedback');
+    const feedbackText = document.getElementById('feedbackText');
     const scoreEl = document.getElementById('score');
-    const penguinImg = document.getElementById('penguin');
-    const letter = document.getElementById('letter');
-    const confettiCanvas = document.getElementById('confetti');
-    const ctx = confettiCanvas.getContext('2d');
+    const confettiCanvas = document.getElementById('confetti').getContext('2d');
+
     const startSound = document.getElementById('startSound');
     const correctSound = document.getElementById('correctSound');
     const wrongSound = document.getElementById('wrongSound');
@@ -132,9 +142,16 @@
     let questions = [];
     let current = 0;
     let correctCount = 0;
-
-    // Confetti setup
     let confettiPieces = [];
+
+    function resizeCanvas() {
+      const c = document.getElementById('confetti');
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
     function spawnConfetti() {
       confettiPieces = Array.from({length: 150}, () => ({
         x: Math.random() * window.innerWidth,
@@ -146,7 +163,9 @@
       requestAnimationFrame(drawConfetti);
     }
     function drawConfetti() {
-      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      const c = document.getElementById('confetti');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0,0,c.width,c.height);
       confettiPieces.forEach(p => {
         ctx.beginPath();
         ctx.fillStyle = p.color;
@@ -158,16 +177,9 @@
       requestAnimationFrame(drawConfetti);
     }
 
-    function resizeCanvas() {
-      confettiCanvas.width = window.innerWidth;
-      confettiCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
     function generateQuestions() {
       let qs = [];
-      for (let i=0; i<100; i++) {
+      for (let i=0; i<10; i++) {
         let a = Math.floor(Math.random() * 900 + 100);
         let b = Math.floor(Math.random() * 90 + 10);
         let ops = ['+', '-', '*', '/'];
@@ -203,50 +215,51 @@
     };
 
     function showQuestion() {
-      progressEl.textContent = `Soal ${current+1}/100`;
+      progressEl.textContent = `Question ${current+1}/10`;
       questionEl.textContent = questions[current].q;
       answerInput.value = '';
-      feedbackEl.textContent = '';
       answerInput.focus();
     }
 
-    function nextQuestion() {
-      current++;
-      if (current >= 100) endQuiz();
-      else showQuestion();
+    function showFeedback(isCorrect) {
+      quiz.classList.add('hidden');
+      feedbackScreen.classList.remove('hidden');
+      if (isCorrect) {
+        feedbackText.textContent = "✅ Benar!";
+        correctSound.play();
+      } else {
+        feedbackText.textContent = `❌ Salah! Jawabannya: ${questions[current].ans}`;
+        wrongSound.play();
+      }
     }
 
-    document.getElementById('nextBtn').onclick = () => checkAnswer();
-    document.getElementById('skipBtn').onclick = () => nextQuestion();
-
+    document.getElementById('submitBtn').onclick = () => checkAnswer();
     answerInput.addEventListener('keyup', (e) => {
       if (e.key === 'Enter') checkAnswer();
     });
+    document.getElementById('nextBtn').onclick = () => nextQuestion();
 
     function checkAnswer() {
       let userAns = parseInt(answerInput.value);
       if (userAns === questions[current].ans) {
-        feedbackEl.textContent = 'Benar! 🎉';
         correctCount++;
-        correctSound.play();
+        showFeedback(true);
       } else {
-        feedbackEl.textContent = `Salah! Jawaban: ${questions[current].ans}`;
-        wrongSound.play();
+        showFeedback(false);
       }
-      setTimeout(nextQuestion, 1000);
+    }
+
+    function nextQuestion() {
+      feedbackScreen.classList.add('hidden');
+      current++;
+      if (current >= 10) endQuiz();
+      else quiz.classList.remove('hidden'), showQuestion();
     }
 
     function endQuiz() {
-      quiz.classList.add('hidden');
       result.classList.remove('hidden');
-      scoreEl.textContent = `Kamu benar ${correctCount}/100 soal!`;
+      scoreEl.textContent = `Kamu benar ${correctCount}/10 soal!`;
       spawnConfetti();
-      setTimeout(() => {
-        penguinImg.classList.remove('hidden');
-        setTimeout(() => {
-          letter.classList.remove('hidden');
-        }, 2000);
-      }, 2000);
     }
 
     document.getElementById('restartBtn').onclick = () => {
