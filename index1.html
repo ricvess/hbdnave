@@ -3,153 +3,235 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy Birthday Nave!</title>
-  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Nave's Birthday Surprise 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Karla:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #d946ef;
+      --secondary: #a855f7;
+      --bg-gradient: linear-gradient(135deg, #fff0f6, #fbe8ff);
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(135deg, #fef6ff, #fceaff);
+      font-family: 'Karla', sans-serif;
+      background: var(--bg-gradient);
       overflow-x: hidden;
+      color: #4c1d95;
     }
-    header {
-      background: linear-gradient(45deg, #ffc6ff, #bdb2ff);
-      padding: 60px 20px 20px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    header h1 {
+    h1, h2 {
       font-family: 'Alfa Slab One', serif;
-      font-size: 3rem;
-      color: #6d28d9;
-      margin: 0;
-      animation: fadeInDown 2s ease-out;
+      color: var(--primary);
+      margin: 0 0 10px;
     }
-    header p {
-      font-size: 1.2rem;
-      color: #7c3aed;
-      margin-top: 10px;
-      font-style: italic;
-      animation: fadeInDown 2.5s ease-out;
+    p {
+      line-height: 1.5;
     }
-    .envelope {
+    .screen {
+      display: none;
+      max-width: 600px;
       margin: 40px auto;
-      width: 320px;
-      height: 220px;
       background: #fff;
-      border: 2px dashed #a855f7;
-      border-radius: 12px;
-      position: relative;
+      padding: 30px;
+      border-radius: 20px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      overflow: hidden;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: bold;
       cursor: pointer;
-      animation: scaleIn 2s ease-out;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: var(--secondary);
+    }
+    input {
+      padding: 10px;
+      border: 2px solid var(--secondary);
+      border-radius: 8px;
+      width: 80%;
+      margin: 15px 0;
+      font-size: 1rem;
     }
     .letter {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #fdf4ff;
+      text-align: left;
+      background: #fff7fb;
       padding: 20px;
-      box-sizing: border-box;
-      transition: top 1s;
-      font-size: 1rem;
-      line-height: 1.5;
-      overflow-y: auto;
-    }
-    .envelope.open .letter {
-      top: 0;
-    }
-    .letter h2 {
-      font-family: 'Alfa Slab One', serif;
-      color: #a21caf;
-      margin-top: 0;
-      font-size: 1.5rem;
-    }
-    .confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    @keyframes fadeInDown {
-      from {opacity: 0; transform: translateY(-30px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
-    @keyframes scaleIn {
-      from {transform: scale(0);}
-      to {transform: scale(1);}
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      animation: fadeIn 2s ease-out;
     }
     footer {
       text-align: center;
       padding: 20px;
-      font-size: 0.9rem;
-      color: #9333ea;
+      font-size: 0.8rem;
+      color: var(--primary);
+    }
+    .confetti-piece {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: hsl(var(--hue), 100%, 70%);
+      top: -10px;
+      animation: fall 4s forwards;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    /* LOADING SCREEN */
+    #loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: var(--bg-gradient);
+      font-family: 'Alfa Slab One', serif;
+      font-size: 2rem;
+      color: var(--primary);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% {opacity: 0.5;}
+      50% {opacity: 1;}
+      100% {opacity: 0.5;}
+    }
+    .envelope {
+      position: relative;
+      margin-top: 20px;
+      padding: 20px;
+      background: #fff;
+      border: 2px dashed var(--secondary);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.5s;
+    }
+    .envelope.open {
+      transform: scale(1.02) rotate(-1deg);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Happy Birthday, Nave!</h1>
-    <p>“Stay weird, stay wonderful” 💿✨</p>
-  </header>
+  <div id="loading">
+    Loading Birthday Surprise...
+  </div>
 
-  <div class="envelope" onclick="openLetter()">
-    <div class="letter">
-      <h2>Special Message 🎁</h2>
-      <p>
-        Dear Nave,<br><br>
-        Happy Birthday! 🎂✨ Hari ini bukan sekadar tentang bertambah usia, tapi tentang merayakan semua hal yang bikin kamu jadi orang yang luar biasa. Kamu itu kayak CD player jadul tapi keren—ngasih vibe klasik yang bikin orang nyaman, tapi tetap bisa nge-beat dengan hal-hal baru.<br><br>
-        Aku harap hari ini jadi momen yang memorable. Isi harimu dengan tawa, musik yang keras (tapi bukan hati yang keras ya wkwk), dan orang-orang yang sayang sama kamu.<br><br>
-        Terima kasih udah jadi teman yang asik, yang bisa diajak cerita random sampai hal paling dalem.<br><br>
-        Semoga semua hal yang kamu mau bisa keturutan satu-satu. Jangan lupa rehat kalau capek, karena dunia butuh versi terbaik dari kamu.<br><br>
-        Stay messy, stay authentic, stay you. Cheers to more years of fun and weirdness.<br><br>
-        With much love,<br>
-        Fredric
-      </p>
+  <div class="screen" id="welcome">
+    <h1>Hi Nave! 🎂</h1>
+    <p>Siap untuk tantangan ultah sempoa? 🎉</p>
+    <button onclick="startQuiz()">Mulai Quiz</button>
+  </div>
+
+  <div class="screen" id="quiz">
+    <h2 id="question"></h2>
+    <input type="text" id="answerInput" placeholder="Jawabanmu di sini" />
+    <br>
+    <button onclick="nextQuestion()">Next</button>
+  </div>
+
+  <div class="screen" id="result">
+    <h1>🎉 Selamat! 🎉</h1>
+    <p>Kamu udah selesaikan tantangan sempoa birthday. Ini hadiahnya ❤️</p>
+    <div class="envelope" onclick="openEnvelope(this)">
+      <div class="letter" style="display: none;">
+        <h2>Special Message 🎁</h2>
+        <p>
+          Dear Nave,<br><br>
+          Happy Birthday! 🎂✨ Hari ini bukan sekadar tentang bertambah usia, tapi tentang merayakan semua hal yang bikin kamu jadi orang yang luar biasa. Kamu itu kayak CD player jadul tapi keren—ngasih vibe klasik yang bikin orang nyaman, tapi tetap bisa nge-beat dengan hal-hal baru.<br><br>
+          Aku harap hari ini jadi momen yang memorable. Isi harimu dengan tawa, musik yang keras (tapi bukan hati yang keras ya wkwk), dan orang-orang yang sayang sama kamu.<br><br>
+          Terima kasih udah jadi teman yang asik, yang bisa diajak cerita random sampai hal paling dalem.<br><br>
+          Semoga semua hal yang kamu mau bisa keturutan satu-satu. Jangan lupa rehat kalau capek, karena dunia butuh versi terbaik dari kamu.<br><br>
+          Stay messy, stay authentic, stay you. Cheers to more years of fun and weirdness.<br><br>
+          With much love,<br>
+          Fredric
+        </p>
+      </div>
     </div>
   </div>
 
-  <div class="confetti" id="confetti"></div>
-
-  <footer>
-    Made with ❤️ for Nave
-  </footer>
+  <footer>Made with ❤️ for Nave</footer>
 
   <script>
-    function openLetter() {
-      document.querySelector('.envelope').classList.add('open');
+    const loading = document.getElementById('loading');
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        loading.style.display = 'none';
+        document.getElementById('welcome').classList.add('active');
+      }, 2000);
+    });
+
+    const questions = [
+      { q: "23 + 47 = ?" },
+      { q: "56 - 19 = ?" },
+      { q: "7 × 8 = ?" },
+      { q: "120 ÷ 6 = ?" },
+      { q: "34 + 29 = ?" }
+    ];
+
+    let current = 0;
+
+    function startQuiz() {
+      document.getElementById('welcome').classList.remove('active');
+      document.getElementById('quiz').classList.add('active');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      document.getElementById('question').textContent = questions[current].q;
+      document.getElementById('answerInput').value = '';
+    }
+
+    function nextQuestion() {
+      current++;
+      if (current < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz').classList.remove('active');
+      document.getElementById('result').classList.add('active');
       launchConfetti();
     }
 
+    function openEnvelope(el) {
+      el.classList.add('open');
+      el.querySelector('.letter').style.display = 'block';
+    }
+
     function launchConfetti() {
-      const confetti = document.getElementById('confetti');
-      for (let i = 0; i < 100; i++) {
-        const div = document.createElement('div');
-        div.style.position = 'absolute';
-        div.style.width = '8px';
-        div.style.height = '8px';
-        div.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
-        div.style.top = Math.random() * 100 + '%';
-        div.style.left = Math.random() * 100 + '%';
-        div.style.opacity = '0';
-        div.style.animation = `fall ${2 + Math.random() * 3}s ease-out forwards`;
-        confetti.appendChild(div);
+      for (let i = 0; i < 120; i++) {
+        let div = document.createElement('div');
+        div.classList.add('confetti-piece');
+        div.style.left = Math.random() * 100 + 'vw';
+        div.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+        div.style.setProperty('--hue', Math.random() * 360);
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 4000);
       }
     }
   </script>
-  <style>
-    @keyframes fall {
-      0% {transform: translateY(-100px); opacity: 1;}
-      100% {transform: translateY(100vh); opacity: 0;}
-    }
-  </style>
 </body>
 </html>
